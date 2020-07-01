@@ -1,28 +1,40 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import 'bootstrap/dist/css/bootstrap.css';
 
-interface AppProps {}
+import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 
-function App({}: AppProps) {
+import { createStore, applyMiddleware } from 'redux';
+import { Provider } from 'react-redux';
+import thunk from 'redux-thunk';
+
+import MovieList from './components/MovieList';
+import MovieEditor from './components/MovieEditor';
+import reducers from './reducers';
+
+const store = createStore(reducers, applyMiddleware(thunk));
+
+const App: React.FC = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Provider store={store}>
+      <div className="container">
+        <h1>Popular movies</h1>
+
+        <BrowserRouter>
+          <Switch>
+            <Route path="/movies">
+              <MovieList />
+            </Route>
+            <Route path="/movie/:id">
+              <MovieEditor />
+            </Route>
+            <Route>
+              <Redirect to="/movies" />
+            </Route>
+          </Switch>
+        </BrowserRouter>
+      </div>
+    </Provider>
   );
-}
+};
 
 export default App;
